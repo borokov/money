@@ -15,18 +15,12 @@
 <script>
   
   var addForm;
+  var eventForm;
   
-  function showAdd() { 
-    //addForm.show("blind", {}, 500); 
-    addForm.css({'display':'block'});
-  }
-  function hideAdd() { 
-    //addForm.hide("blind", {}, 500); 
-    addForm.css({'display':'none'});
-  }
-  
-  function showEvent() { $("#eventForm").show("blind", {}, 500); }
-  function hideEvent() { $("#eventForm").hide("blind", {}, 500); }
+  function showAdd() { addForm.css({'display':'block'}); }
+  function hideAdd() { addForm.css({'display':'none'}); }
+  function showEvent() { eventForm.css({'display':'block'}); }
+  function hideEvent() { eventForm.css({'display':'none'}); }
   
   function hideAll() { hideAdd(); hideEvent(); }
   
@@ -36,6 +30,8 @@
 
   $(function() {
     addForm = $("#addForm");
+    eventForm = $("#eventForm");
+    
     $("#addButton").button().click(function(event) {
       hideAll();
       showAdd();
@@ -46,14 +42,26 @@
     
     $("#eventsButton").button().click(function(event) {
       hideAll();
+      showEvent();
     });
     
     $("#statsButton").button().click(function(event) {
      hideAll();
     });
     
-    $( "#selectCategory" ).selectmenu();
+    //$( "#selectCategory" ).selectmenu();
   });
+  
+  //////////////////// Giphy part
+  function getGIFUrl(data)
+  {
+    $("#giphy").attr("src", data.data.image_url);
+  };
+  $(document).ready(function()
+  {
+    //$.getJSON("http://api.giphy.com/v1/gifs/random?api_key=dc6zaTOxFJmzC&tag=panda", getGIFUrl);
+  });
+  //////////////////// Giphy part
 </script>
 
 <body>
@@ -66,8 +74,10 @@ include("connectSql.php");
 <div>
 <h1>Vive les pandas !!! <h1> </div> </div>
 <div id="corps">
-<hr/>
 
+<p align="center"><img id="giphy"/></p>
+<hr/>
+  
 <?php
   //On se connecte
   connectMaBase();
@@ -127,16 +137,70 @@ include("connectSql.php");
   </p>
 </div>
   
-<div id="eventForm">
- 
+<div id="eventForm" class="ui-widget-content ui-corner-all" style="display: none">
+ <?php
+  $sql = 'SELECT SUM(value) FROM events';  
+  $req = mysql_query($sql) or die('Erreur SQL !<br />'.$sql.'<br />'.mysql_error());  
+  $data = mysql_fetch_assoc($req);
+
+  $total = $data['SUM(value)'];
+?>
+
+  <div>Total: <?php echo($total) ?> &euro;</div>
+  
+  <?php                                
+  // On prepare la requete 
+  $sql = 'SELECT * FROM events';  
+                                 
+  // On lance la requete (mysql_query) et on impose un message d'erreur si la requete ne se passe pas (or die)  
+  $req = mysql_query($sql) or die('Erreur SQL !<br />'.$sql.'<br />'.mysql_error());  
+?>
+  
+  <table>
+  <tr>
+    <th>Echeance</th>
+    <th>Category</th>
+    <th>Value</th>
+    <th></th>
+  </tr>                           
+<?php                                
+        //boucle
+        while ($data = mysql_fetch_array($req)) {
+          echo '<tr>';
+            // on affiche les r�sultats 
+            echo '<td>'.date('d/m', strtotime($data['date'])).'</td>'; 
+            echo '<td>'.html_entity_decode(stripslashes($data['category'])).'</td>';  
+            echo '<td class="value">'.html_entity_decode(stripslashes($data['value'])).' &euro;</td>';  
+            ?>
+              <td>
+              <form name="cached" method="post" action="doAdd.php">
+                <input type="hidden" name="value" value="<?php echo($data['value']); ?>"/>
+                <input type="hidden" name="category" value="<?php echo(html_entity_decode(html_entity_decode(stripslashes($data['category'])))); ?>"/>
+                <input class="button_input" type="submit" value="pay"/>
+              </form>
+              </td>
+            <?php 
+            
+          echo '</tr>';
+        }  
+        //On lib�re la m�moire mobilis�e pour cette requ�te dans sql
+        //$data de PHP lui est toujours accessible !
+        mysql_free_result ($req);  
+?>
+</table>
 </div>
 
 
-<?php                                
+<?php
+  
+  $limit=$_GET["limit"];
+  if ( $limit <= 0 )
+    $limit = 100;
+  
   // On prepare la requete 
-  $sql = 'SELECT * FROM operation ORDER BY date DESC';  
+  $sql = 'SELECT * FROM operation ORDER BY date DESC limit ' . $limit;  
                                  
-  // On lance la requ�te (mysql_query) et on impose un message d'erreur si la requ�te ne se passe pas (or die)  
+  // On lance la requete (mysql_query) et on impose un message d'erreur si la requ�te ne se passe pas (or die)  
   $req = mysql_query($sql) or die('Erreur SQL !<br />'.$sql.'<br />'.mysql_error());  
 ?>
 
