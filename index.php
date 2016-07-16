@@ -10,19 +10,24 @@
   <link href="jquery-ui/jquery-ui.theme.min.css" rel="stylesheet">
   <script type="text/javascript" src="jquery-ui/external/jquery/jquery.js"></script>
   <script type="text/javascript" src="jquery-ui/jquery-ui.min.js"></script>
+  <script src="highcharts/exporting.js"></script>
+  <script src="highcharts/highcharts.js"></script>
 </head>
 
 <script>
   
   var addForm;
   var eventForm;
+  var statsForm;
   
   function showAdd() { addForm.css({'display':'block'}); }
   function hideAdd() { addForm.css({'display':'none'}); }
   function showEvent() { eventForm.css({'display':'block'}); }
   function hideEvent() { eventForm.css({'display':'none'}); }
+  function showStats() { statsForm.css({'display':'block'}); }
+  function hideStats() { statsForm.css({'display':'none'}); }
   
-  function hideAll() { hideAdd(); hideEvent(); }
+  function hideAll() { hideAdd(); hideEvent(); hideStats(); }
   
   function doAdd(value, category) {
     $.post("doAdd.php", { value: value, category: category }, function(){location.reload(true);} );
@@ -31,6 +36,7 @@
   $(function() {
     addForm = $("#addForm");
     eventForm = $("#eventForm");
+    statsForm = $("#statsForm");
     
     $("#addButton").button().click(function(event) {
       hideAll();
@@ -38,6 +44,9 @@
     });
     $("#doAddButton").button().click(function(event) {
       doAdd($("#doAddValue").val(), $("#selectCategory").val());
+    });
+    $("#doMinusButton").button().click(function(event) {
+      $("#doAddValue")[0].value = -$("#doAddValue")[0].value;
     });
     
     $("#eventsButton").button().click(function(event) {
@@ -47,25 +56,16 @@
     
     $("#statsButton").button().click(function(event) {
      hideAll();
+     showStats();
     });
     
     //$( "#selectCategory" ).selectmenu();
   });
   
-  //////////////////// Giphy part
-  function getGIFUrl(data)
-  {
-    $("#giphy").attr("src", data.data.image_url);
-  };
-  $(document).ready(function()
-  {
-    //$.getJSON("http://api.giphy.com/v1/gifs/random?api_key=dc6zaTOxFJmzC&tag=panda", getGIFUrl);
-  });
-  //////////////////// Giphy part
 </script>
 
 <body>
-  <?php
+<?php
 include("connectSql.php");
 ?>
 
@@ -75,7 +75,6 @@ include("connectSql.php");
 <h1>Vive les pandas !!! <h1> </div> </div>
 <div id="corps">
 
-<p align="center"><img id="giphy"/></p>
 <hr/>
   
 <?php
@@ -119,7 +118,7 @@ include("connectSql.php");
     $req = mysql_query($sql) or die('Erreur SQL !<br />'.$sql.'<br />'.mysql_error());  
   ?> 
   <table>
-    <tr><td>Val :</td><td> <input class="text_input" type="text" id="doAddValue"/></td></tr> 
+    <tr><td>Val :</td><td> <button id="doMinusButton">+/-</button><input class="text_input" type="text" id="doAddValue"/></td></tr> 
     <tr><td>Categorie :</td> 
     <td>
     <select id="selectCategory" name="category" style="width: 200px">
@@ -190,12 +189,12 @@ include("connectSql.php");
 </table>
 </div>
 
-
-<?php
+<div id="statsForm" class="ui-widget-content ui-corner-all" style="display: none">
+<?php include("stats_tmpl.php"); ?>
+</div>
   
-  $limit=$_GET["limit"];
-  if ( $limit <= 0 )
-    $limit = 100;
+<?php
+  $limit = 100;
   
   // On prepare la requete 
   $sql = 'SELECT * FROM operation ORDER BY date DESC limit ' . $limit;  
@@ -267,7 +266,6 @@ include("connectSql.php");
 <br/>
 
 </div>
-<div id="footer"></div>
 </div>
 </body>
 </html>
