@@ -1,0 +1,118 @@
+body
+{
+  background: #000;
+	text-align: center;
+	font-size: 2.5em;
+	font-family: Verdana, 'Sans serif', sans;
+	margin: 0;
+
+}
+
+/* Conteneur */
+div#conteneur {
+	width: 100%;
+	margin: 10px auto 0 auto;
+	background: #fff; 
+	text-align: left;
+}
+
+
+/* En-t�te*/
+div#header {
+	height: 100px;
+  padding: 20px;
+  text-align: center;
+}
+
+
+
+div#corps{
+	margin-left : 25px;
+	margin-right : 25px;
+}
+
+hr{
+	margin-left : -12px;
+}
+
+a {
+  font-size : 2.5em;
+}
+
+
+div#value {
+  text-align: right;
+}
+span#left {
+  float: left;
+}
+
+table {
+  border: medium solid #000;
+  border-collapse: collapse;
+  margin-top: 20px;
+  width: 100%;
+}
+
+th {
+  font-family: monospace;
+  border: thin solid #6495ed;
+  padding: 5px;
+  background-color: #D0E3FA;
+}
+
+td {
+  font-family: sans-serif;
+  border: thin solid #6495ed;
+  padding: 5px;
+  text-align: center;
+}
+
+td.value {
+  text-align: right;
+}
+
+tr.negative {
+  background-color: #ffddee;
+}
+
+tr.positive {
+  background-color: #ddffdd;
+}
+
+tr.separation {
+  background-color: #D0E3FA;
+}
+
+.text_input{ 
+  width:200px; 
+  height:50px; 
+  margin-top : 10px;
+  margin-bottom : 10px;
+  font-size:14px; 
+}
+
+.button_input{ 
+  font-size:1em; 
+}
+
+#navbar ul {
+  height: 80px;
+	padding: 0 0 1px 0;
+}
+#navbar ul li {
+	display: inline;
+}
+
+
+img /* Toutes les images */
+{
+   border: none; /* Pas de bordure */
+}
+
+/* Pied de page*/
+div#footer{
+	height: 40px;
+	display: block;
+	background: url("Images/footer.png") no-repeat;
+}
