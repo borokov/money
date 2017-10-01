@@ -8,26 +8,26 @@
 
   // incomes
   $sql = 'SELECT SUM(value) FROM operation WHERE value > 0 AND category = "VSG" AND date > "'.date("Y-m-d H:i:s", $minDate).'"';  
-  $req = mysql_query($sql) or die('Erreur SQL !<br />'.$sql.'<br />'.mysql_error());
-  $data = mysql_fetch_assoc($req);
+  $req = mysqli_query($base, $sql) or die('Erreur SQL !<br />'.$sql.'<br />'.mysqli_error($base));
+  $data = mysqli_fetch_assoc($req);
   $income = $data['SUM(value)'];
 
   // outcomes
   $sql = 'SELECT SUM(value) FROM operation WHERE value < 0 AND value>-1000 AND category!="Epargne" AND date > "'.date("Y-m-d H:i:s", $minDate).'"';  
-  $req = mysql_query($sql) or die('Erreur SQL !<br />'.$sql.'<br />'.mysql_error());
-  $data = mysql_fetch_assoc($req);
+  $req = mysqli_query($base, $sql) or die('Erreur SQL !<br />'.$sql.'<br />'.mysqli_error($base));
+  $data = mysqli_fetch_assoc($req);
   $outcome = $data['SUM(value)'];
 
   // epargne
   $sql = 'SELECT SUM(value) FROM operation WHERE category="Epargne" AND date > "'.date("Y-m-d H:i:s", $minDate).'"';  
-  $req = mysql_query($sql) or die('Erreur SQL !<br />'.$sql.'<br />'.mysql_error());
-  $data = mysql_fetch_assoc($req);
+  $req = mysqli_query($base, $sql) or die('Erreur SQL !<br />'.$sql.'<br />'.mysqli_error($base));
+  $data = mysqli_fetch_assoc($req);
   $epargne = $data['SUM(value)'];
   
   // CPAM
   $sql = 'SELECT SUM(value) FROM operation WHERE category="CPAM" AND date > "'.date("Y-m-d H:i:s", $minDate).'"';  
-  $req = mysql_query($sql) or die('Erreur SQL !<br />'.$sql.'<br />'.mysql_error());
-  $data = mysql_fetch_assoc($req);
+  $req = mysqli_query($base, $sql) or die('Erreur SQL !<br />'.$sql.'<br />'.mysqli_error($base));
+  $data = mysqli_fetch_assoc($req);
   $CPAM = $data['SUM(value)'];
 
 ?>
@@ -42,9 +42,9 @@
                 data: [
                   <?php  
                     $sql = 'SELECT SUM(value),category FROM operation WHERE date > "'.date("Y-m-d H:i:s", $minDate).'" AND value < 0 GROUP BY category';
-                    $req =mysql_query($sql) or die("Erreur SQL !<br />".$sql."<br />".mysql_error());
+                    $req =mysqli_query($base, $sql) or die("Erreur SQL !<br />".$sql."<br />".mysqli_error($base));
 
-                    while ($data = mysql_fetch_array($req)) 
+                    while ($data = mysqli_fetch_array($req)) 
                     {
                       $category = addslashes($data['category']);
                       $sumValue = $data['SUM(value)'];

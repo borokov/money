@@ -1,19 +1,19 @@
 <?php
 include("connectSql.php");
 
-//On récupère les valeurs entrées par l'utilisateur :
+//On recupere les valeurs entrees par l'utilisateur :
 $value=htmlspecialchars($_POST['value']);
 $category=htmlspecialchars($_POST['category']);
                     
-connectMaBase();
+$base = connectMaBase();
                     
-//On prépare la commande sql d'insertion
+//On prepare la commande sql d'insertion
 $sql = 'DELETE FROM operation WHERE id='.$_POST['id'];
                     
-mysql_query ($sql) or die ('Erreur SQL : '.$sql.'<br />'.mysql_error()); 
+mysqli_query($base, $sql) or die ('Erreur SQL : '.$sql.'<br />'.mysqli_error($base)); 
                     
 // on ferme la connexion
-mysql_close();
+mysqli_close($base);
 
 header('Location: index.php');  
 ?>

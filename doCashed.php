@@ -5,15 +5,15 @@ include("connectSql.php");
 $value=htmlspecialchars($_POST['value']);
 $category=htmlspecialchars($_POST['category']);
                     
-connectMaBase();
+$base = connectMaBase();
                     
 //On prépare la commande sql d'insertion
 $sql = 'UPDATE operation SET cashed=1,date=now() WHERE id='.$_POST['id'];
                     
-mysql_query ($sql) or die ('Erreur SQL : '.$sql.'<br />'.mysql_error()); 
+mysqli_query($base, $sql) or die ('Erreur SQL : '.$sql.'<br />'.mysqli_error($base)); 
                     
 // on ferme la connexion
-mysql_close();
+mysqli_close($base);
 
 header('Location: index.php');  
 ?>

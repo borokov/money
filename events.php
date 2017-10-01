@@ -20,13 +20,13 @@ include("connectSql.php");
 
 <?php
   //On se connecte
-  connectMaBase();
+  $base = connectMaBase();
 ?>
 
 <?php
   $sql = 'SELECT SUM(value) FROM events';  
-  $req = mysql_query($sql) or die('Erreur SQL !<br />'.$sql.'<br />'.mysql_error());  
-  $data = mysql_fetch_assoc($req);
+  $req = mysqli_query($base, $sql) or die('Erreur SQL !<br />'.$sql.'<br />'.mysqli_error($base));  
+  $data = mysqli_fetch_assoc($req);
 
   $total = $data['SUM(value)'];
 ?>
@@ -39,8 +39,8 @@ include("connectSql.php");
   // On prépare la requête 
   $sql = 'SELECT * FROM events';  
                                  
-  // On lance la requête (mysql_query) et on impose un message d'erreur si la requête ne se passe pas (or die)  
-  $req = mysql_query($sql) or die('Erreur SQL !<br />'.$sql.'<br />'.mysql_error());  
+  // On lance la requete (mysqli_query) et on impose un message d'erreur si la requête ne se passe pas (or die)  
+  $req = mysqli_query($base, $sql) or die('Erreur SQL !<br />'.$sql.'<br />'.mysqli_error($base));  
 ?>
 
 <table>
@@ -52,7 +52,7 @@ include("connectSql.php");
   </tr>                           
 <?php                                
         //boucle
-        while ($data = mysql_fetch_array($req)) {
+        while ($data = mysqli_fetch_array($req)) {
           echo '<tr>';
             // on affiche les résultats 
             echo '<td>'.date('d/m', strtotime($data['date'])).'</td>'; 
@@ -72,13 +72,13 @@ include("connectSql.php");
         }  
         //On libère la mémoire mobilisée pour cette requête dans sql
         //$data de PHP lui est toujours accessible !
-        mysql_free_result ($req);  
+        mysqli_free_result($req);  
 ?>
 </table>
                 
 <?php     
         //On ferme sql
-        mysql_close ();  
+        mysqli_close($base);  
 ?>
 <br/>
 

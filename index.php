@@ -79,19 +79,19 @@ include("connectSql.php");
   
 <?php
   //On se connecte
-  connectMaBase();
+  $base = connectMaBase();
 ?>
 
 <?php
   $sql = 'SELECT SUM(value) FROM operation';  
-  $req = mysql_query($sql) or die('Erreur SQL !<br />'.$sql.'<br />'.mysql_error());  
-  $data = mysql_fetch_assoc($req);
+  $req = mysqli_query($base, $sql) or die('Erreur SQL !<br />'.$sql.'<br />'.mysqli_error($base));  
+  $data = mysqli_fetch_assoc($req);
 
   $finalValue = $data['SUM(value)'];
 
   $sql = 'SELECT SUM(value) FROM operation WHERE cashed=1';  
-  $req = mysql_query($sql) or die('Erreur SQL !<br />'.$sql.'<br />'.mysql_error());  
-  $data = mysql_fetch_assoc($req);
+  $req = mysqli_query($base, $sql) or die('Erreur SQL !<br />'.$sql.'<br />'.mysqli_error($base));  
+  $data = mysqli_fetch_assoc($req);
 
   $currentValue = $data['SUM(value)'];
 ?>
@@ -115,7 +115,7 @@ include("connectSql.php");
 <p>
   <?php     
     $sql = 'SELECT category FROM operation WHERE date > "'.date("Y-m-d H:i:s", strtotime("-1 year")).'" GROUP BY category';  
-    $req = mysql_query($sql) or die('Erreur SQL !<br />'.$sql.'<br />'.mysql_error());  
+    $req = mysqli_query($base, $sql) or die('Erreur SQL !<br />'.$sql.'<br />'.mysqli_error($base));  
   ?> 
   <table>
     <tr><td>Val :</td><td> <button id="doMinusButton">+/-</button><input class="text_input" type="text" id="doAddValue"/></td></tr> 
@@ -123,7 +123,7 @@ include("connectSql.php");
     <td>
     <select id="selectCategory" name="category" style="width: 200px">
     <?php                                
-        while ($data = mysql_fetch_array($req)) {
+        while ($data = mysqli_fetch_array($req)) {
           $category = $data['category'];
           echo('<option value="'.$category.'">'.$category.'</option>');
         }
@@ -139,8 +139,8 @@ include("connectSql.php");
 <div id="eventForm" class="ui-widget-content ui-corner-all" style="display: none">
  <?php
   $sql = 'SELECT SUM(value) FROM events';  
-  $req = mysql_query($sql) or die('Erreur SQL !<br />'.$sql.'<br />'.mysql_error());  
-  $data = mysql_fetch_assoc($req);
+  $req = mysqli_query($base, $sql) or die('Erreur SQL !<br />'.$sql.'<br />'.mysqli_error($base));  
+  $data = mysqli_fetch_assoc($req);
 
   $total = $data['SUM(value)'];
 ?>
@@ -151,8 +151,8 @@ include("connectSql.php");
   // On prepare la requete 
   $sql = 'SELECT * FROM events';  
                                  
-  // On lance la requete (mysql_query) et on impose un message d'erreur si la requete ne se passe pas (or die)  
-  $req = mysql_query($sql) or die('Erreur SQL !<br />'.$sql.'<br />'.mysql_error());  
+  // On lance la requete (mysqli_query) et on impose un message d'erreur si la requete ne se passe pas (or die)  
+  $req = mysqli_query($base, $sql) or die('Erreur SQL !<br />'.$sql.'<br />'.mysqli_error($base));  
 ?>
   
   <table>
@@ -164,7 +164,7 @@ include("connectSql.php");
   </tr>                           
 <?php                                
         //boucle
-        while ($data = mysql_fetch_array($req)) {
+        while ($data = mysqli_fetch_array($req)) {
           echo '<tr>';
             // on affiche les r�sultats 
             echo '<td>'.date('d/m', strtotime($data['date'])).'</td>'; 
@@ -184,7 +184,7 @@ include("connectSql.php");
         }  
         //On lib�re la m�moire mobilis�e pour cette requ�te dans sql
         //$data de PHP lui est toujours accessible !
-        mysql_free_result ($req);  
+        mysqli_free_result ($req);  
 ?>
 </table>
 </div>
@@ -199,8 +199,8 @@ include("connectSql.php");
   // On prepare la requete 
   $sql = 'SELECT * FROM operation ORDER BY date DESC limit ' . $limit;  
                                  
-  // On lance la requete (mysql_query) et on impose un message d'erreur si la requ�te ne se passe pas (or die)  
-  $req = mysql_query($sql) or die('Erreur SQL !<br />'.$sql.'<br />'.mysql_error());  
+  // On lance la requete (mysqli_query) et on impose un message d'erreur si la requ�te ne se passe pas (or die)  
+  $req = mysqli_query($base, $sql) or die('Erreur SQL !<br />'.$sql.'<br />'.mysqli_error($base));  
 ?>
 
 <table>
@@ -212,7 +212,7 @@ include("connectSql.php");
   </tr>                           
 <?php                                
         $prevMonth = 0;
-        while ($data = mysql_fetch_array($req)) {
+        while ($data = mysqli_fetch_array($req)) {
 
           $curMonth = date('m', strtotime($data['date']));
           if ( $curMonth != $prevMonth )
@@ -255,13 +255,13 @@ include("connectSql.php");
         }  
         //On lib�re la m�moire mobilis�e pour cette requ�te dans sql
         //$data de PHP lui est toujours accessible !
-        mysql_free_result ($req);  
+        mysqli_free_result ($req);  
 ?>
 </table>
                 
 <?php     
         //On ferme sql
-        mysql_close ();  
+        mysqli_close($base);  
 ?>
 <br/>
 
